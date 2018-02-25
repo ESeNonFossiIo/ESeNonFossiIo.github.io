@@ -1,7 +1,7 @@
 # Byte-compiled / optimized / DLL files
 *.manifest
 *.spec
-
+*.DS_Store
 
 _site/**
 _site
