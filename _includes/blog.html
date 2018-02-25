@@ -1,7 +1,7 @@
 <!-- Blog Grid Section -->
 <section class="blog">
     <div class="posts">
-        {% for post in site.blog %}
+        {% for post in site.blog reversed %}
       <div class="post-teaser">
         {% if post.thumbnail %}
         <div class="post-img">

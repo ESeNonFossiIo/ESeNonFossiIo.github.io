@@ -10,21 +10,44 @@ layout: default
     </p>
   </header>
   <section class="post-content">{{ content }}</section>
-   
+
    <!-- Tag list -->
-  {% capture tag_list %}{{ page.tags | join: "|"}}{% endcapture %}
-  {% include tags_list.html tags=tag_list %}
-    
+  <!-- {% capture tag_list %}{{ page.tags | join: "|"}}{% endcapture %} -->
+  <!-- {% include tags_list.html tags=tag_list %} -->
+  {% assign rawtags = "" %}
+  {% assign ttags = page.tags | replace:',','|' | append:'|' %}
+  <!-- {% assign ttags = ttags | replace:'"','' | replace:']','' | replace:'[','' %} -->
+  {% assign rawtags = rawtags | append:ttags %}
+  {% assign rawtags = rawtags | replace:'"','' | replace:']','' | replace:'[',''  %}
+  {% assign rawtags = rawtags | split:'|' | sort %}
+
+  {% assign tags = "" %}
+  {% for tag in rawtags %}
+    {% if tag != "" %}
+      {% if tags == "" %}
+        {% assign tags = tag | split:'|' %}
+      {% endif %}
+      {% unless tags contains tag %}
+        {% assign tags = tags | join:'|' | append:'|' | append:tag | split:'|' %}
+      {% endunless %}
+    {% endif %}
+  {% endfor %}
+
+  {% if tags.size > 0 %}
+  <footer>
+      <div class="tag-list">
+      {% if tags.size == 1 %}
+        <div class="meta">Tag</div>
+      {% elsif tags.size > 1 %}
+        <div class="meta">Tags</div>
+      {% endif %}
+
+      {% for tag in tags %}
+        <a class="button" href="{{site.baseurl}}/tags#{{tag}}">
+          <p><i class="fa fa-tag fa-fw"></i> {{ tag }}</p>
+        </a>
+      {% endfor %}
+      </div>
+  </footer>
+  {% endif %}
 </article>
-
-<!-- Disqus -->
-{% if site.theme_settings.disqus_shortname %}
-<div class="comments">
-  {% include disqus.html %}
-</div>
-{% endif %}
-
-<!-- Post navigation -->
-{% if site.theme_settings.post_navigation %}
-  {% include post_nav.html %}
-{% endif %}
